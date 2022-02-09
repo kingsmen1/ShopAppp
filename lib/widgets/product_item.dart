@@ -7,7 +7,11 @@ class ProductItem extends StatelessWidget {
   final String title;
   final String imageUrl;
 
-  ProductItem(this.id, this.title, this.imageUrl);
+  ProductItem(
+    @required this.id,
+    @required this.title,
+    @required this.imageUrl,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -16,10 +20,7 @@ class ProductItem extends StatelessWidget {
       child: GridTile(
         child: GestureDetector(
           onTap: () {
-            Navigator.of(context).pushNamed(
-              ProductDetailScreen.routeName,
-              arguments: id,
-            );
+            Navigator.of(context).pushNamed(ProductDetailScreen.routeName, arguments: id);
           },
           child: Image.network(
             imageUrl,
