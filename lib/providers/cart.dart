@@ -11,6 +11,7 @@ class CartItem {
       @required this.id,
       @required this.price,
       @required this.quantity});
+
 }
 
 class Cart with ChangeNotifier {
@@ -44,6 +45,7 @@ class Cart with ChangeNotifier {
           (existingCartItem) => CartItem(
               id: existingCartItem.id,
               price: existingCartItem.price,
+              title: existingCartItem.title,
               quantity: existingCartItem.quantity + 1));
     } else {
       _itmes.putIfAbsent(
