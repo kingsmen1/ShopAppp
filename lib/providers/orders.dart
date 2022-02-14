@@ -3,7 +3,6 @@ import 'package:shopapp/providers/cart.dart';
 
 class OrderItem {
   final String id;
-
   final double amount;
   final List<CartItem> products;
   final DateTime dateTime;
