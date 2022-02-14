@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopapp/providers/cart.dart' show Cart;
 import 'package:shopapp/providers/orders.dart';
+import 'package:shopapp/widgets/app_drawer.dart';
 import '../widgets/cart_item.dart';
 
 class CartScreen extends StatelessWidget {
@@ -14,6 +15,7 @@ class CartScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Your Cart'),
       ),
+      drawer: AppDrawer(),
       body: Column(
         children: [
           Card(
@@ -30,7 +32,7 @@ class CartScreen extends StatelessWidget {
                   const Spacer(),
                   Chip(
                     label: Text(
-                      '\$${cart.totalAmount}',
+                      '\$${cart.totalAmount.toStringAsFixed(2)}',
                       style: TextStyle(
                           color: Theme.of(context)
                               .primaryTextTheme
