@@ -11,6 +11,7 @@ class ProductDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //final currentWidth = MediaQuery.of(context).size.width;
     final productId = ModalRoute.of(context).settings.arguments as String;
     final loadedProduct = Provider.of<Products>(context, listen: false)
         .findById(productId); // is the id!
@@ -48,7 +49,7 @@ class ProductDetailScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 softWrap: true,
               ),
-            )
+            ),
           ],
         ),
       ),

@@ -6,12 +6,10 @@ class CartItem {
   final int quantity;
   final double price;
 
-  CartItem(
-      {@required this.title,
-      @required this.id,
-      @required this.price,
-      @required this.quantity});
-
+  CartItem({@required this.title,
+    @required this.id,
+    @required this.price,
+    @required this.quantity});
 }
 
 class Cart with ChangeNotifier {
@@ -30,36 +28,60 @@ class Cart with ChangeNotifier {
     _itmes.forEach((key, CartItem) {
       amount += CartItem.price * CartItem.quantity;
     });
-
     return amount;
   }
 
-  void addItems(String productsId, double price, String title,) {
+  void addItems(String productsId,
+      double price,
+      String title,) {
     if (_itmes.containsKey(productsId)) {
-      _itmes.update(productsId, (existingCartItem) => CartItem(
-              id: existingCartItem.id,
-              price: existingCartItem.price,
-              title: existingCartItem.title,
-              quantity: existingCartItem.quantity + 1));
+      _itmes.update(
+          productsId,
+              (existingCartItem) =>
+              CartItem(
+                  id: existingCartItem.id,
+                  price: existingCartItem.price,
+                  title: existingCartItem.title,
+                  quantity: existingCartItem.quantity + 1));
     } else {
-      _itmes.putIfAbsent(productsId,
-          () => CartItem(
-              title: title,
-              id: DateTime.now().toString(),
-              price: price,
-              quantity: 1));
+      _itmes.putIfAbsent(
+          productsId,
+              () =>
+              CartItem(
+                  title: title,
+                  id: DateTime.now().toString(),
+                  price: price,
+                  quantity: 1));
+      print(items[1]);
     }
     notifyListeners();
   }
 
-  void removeItem (String producttId){
+  void removeItem(String producttId) {
     _itmes.remove(producttId);
     notifyListeners();
   }
 
-  void clear(){
-    _itmes ={};
+  void removeSingleItem(String productId) {
+    if (!_itmes.containsKey(productId)) {
+      return;
+    }
+    if (_itmes[productId].quantity > 1) {
+      _itmes.update(productId, (existingItem) =>
+          CartItem(title: existingItem.title,
+              id: existingItem.id,
+              price: existingItem.price,
+              quantity: existingItem.quantity - 1));
+    }
+    else{
+      _itmes.remove(productId);
+    }
     notifyListeners();
   }
 
+
+  void clear() {
+    _itmes = {};
+    notifyListeners();
+  }
 }

@@ -37,7 +37,8 @@ class _OrderItemState extends State<OrderItem> {
           if (expanded)
             Container(
               padding: EdgeInsets.symmetric(horizontal: 15,vertical: 3),
-              height: min(widget.order.products.length * 20.0 + 15, 100),
+              height: min(widget.order.products.length * 50.0, MediaQuery.of(context).size.height / 2),
+              //min(widget.order.products.length * 20.0 + 15, 100),
               child: ListView(
                 children: widget.order.products
                     .map((product) => Row(
