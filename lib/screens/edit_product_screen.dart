@@ -9,13 +9,26 @@ class EditProductScreen extends StatefulWidget {
 
 class _EditProductScreenState extends State<EditProductScreen> {
   final _pricefocusNode = FocusNode();
-  final _discriptionFocusNode  = FocusNode();
+  final _discriptionFocusNode = FocusNode();
+  String _imageUrl = "";
+  final _imageUrlFocusNode = FocusNode();
 
+ /* @override
+  void initState() {
+    _imageUrlFocusNode.addListener(_updateImageUrl);
+    super.initState();
+  }
+
+  void _updateImageUrl() {
+    setState(() {});
+  }*/
 
   @override
   void dispose() {
     _pricefocusNode.dispose();
     _discriptionFocusNode.dispose();
+    _imageUrlFocusNode.dispose();
+    _imageUrlFocusNode.dispose();
     super.dispose();
   }
 
@@ -43,7 +56,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
               textInputAction: TextInputAction.next,
               keyboardType: TextInputType.number,
               focusNode: _pricefocusNode,
-              onFieldSubmitted: (_){
+              onFieldSubmitted: (_) {
                 FocusScope.of(context).requestFocus(_discriptionFocusNode);
               },
             ),
@@ -55,6 +68,42 @@ class _EditProductScreenState extends State<EditProductScreen> {
               maxLines: 3,
               focusNode: _discriptionFocusNode,
             ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 1, color: Colors.grey),
+                    ),
+                    child:   _imageUrl.isEmpty
+                        ? Text('Enter Image Url')
+                        : FittedBox(
+                            child: Image.network(
+                              _imageUrl,
+                              fit: BoxFit.cover,
+                            ),
+                          )),
+                Expanded(
+                  child: TextFormField(
+                    decoration: const InputDecoration(labelText: 'Image Url'),
+                    keyboardType: TextInputType.url,
+                    textInputAction: TextInputAction.done,
+                    onChanged: (value) {
+                      setState(() {
+                        _imageUrl = value;
+                      });
+                    },
+                    //controller: _imageUrlController,
+                    focusNode: _imageUrlFocusNode,
+                    onEditingComplete: () {
+                      setState(() {});
+                    },
+                  ),
+                ),
+              ],
+            )
           ],
         )),
       ),
