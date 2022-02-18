@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class EditProductScreen extends StatefulWidget {
+  static const routeName = "/edit_product";
   @override
   _EditProductScreenState createState() => _EditProductScreenState();
 }
@@ -8,6 +9,16 @@ class EditProductScreen extends StatefulWidget {
 class _EditProductScreenState extends State<EditProductScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(title:const Text('Edit Product')),
+      body: Form(
+        child: TextFormField(
+          decoration: const InputDecoration(labelText: 'Title',),
+          textInputAction: TextInputAction.next,
+
+
+        ),
+      ),
+    );
   }
 }
