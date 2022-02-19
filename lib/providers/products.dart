@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import './product.dart';
 
 class Products with ChangeNotifier {
-  List<Product> _items = [
+  final List<Product>  _items = [
     Product(
       id: 'p1',
       title: 'Red Shirt',
@@ -34,48 +34,6 @@ class Products with ChangeNotifier {
       price: 49.99,
       imageUrl:
           'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
-    ),Product(
-      id: 'p5',
-      title: 'A Pan',
-      description: 'Prepare any meal you want.',
-      price: 49.99,
-      imageUrl:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
-    ),Product(
-      id: 'p6',
-      title: 'A Pan',
-      description: 'Prepare any meal you want.',
-      price: 49.99,
-      imageUrl:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
-    ),Product(
-      id: 'p7',
-      title: 'A Pan',
-      description: 'Prepare any meal you want.',
-      price: 49.99,
-      imageUrl:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
-    ),Product(
-      id: 'p8',
-      title: 'A Pan',
-      description: 'Prepare any meal you want.',
-      price: 49.99,
-      imageUrl:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
-    ),Product(
-      id: 'p9',
-      title: 'A Pan',
-      description: 'Prepare any meal you want.',
-      price: 49.99,
-      imageUrl:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
-    ),Product(
-      id: 'p10',
-      title: 'A Pan',
-      description: 'Prepare any meal you want.',
-      price: 49.99,
-      imageUrl:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
     ),
   ];
 
@@ -85,7 +43,7 @@ class Products with ChangeNotifier {
     return [..._items];
   }
 
-  List<Product> get favoriteItems{
+  List<Product> get favoriteItems {
     return _items.where((element) => element.isFavorite).toList();
   }
 
@@ -103,8 +61,15 @@ class Products with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  void addProduct() {
-    //_items.add(value);
+  void addProduct(Product product) {
+    final newProduct = Product(
+      price: product.price,
+      id: DateTime.now().toString(),
+      imageUrl: product.imageUrl,
+      description: product.description,
+      title: product.title,
+    );
+    _items.insert(0, newProduct);
     notifyListeners();
   }
 }
