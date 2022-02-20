@@ -66,7 +66,7 @@ class Products with ChangeNotifier {
   // }
 
   Future<void> addProduct(Product product) {
-    final url  = Uri.parse('https://flutter-update-4c020-default-rtdb.asia-southeast1.firebasedatabase.app/products.json');
+    final url  = Uri.parse('https://flutter-update-4c020-default-rtdb.asia-southeast1.firebasedatabase.app/products');
    return http.post(url , body: json.encode({
       'title':product.title,
       'description':product.description,
@@ -83,8 +83,13 @@ class Products with ChangeNotifier {
     );
     _items.add(newProduct);
     // _items.insert(0, newProduct); // at the start of the list
-    notifyListeners();});
+    notifyListeners();}).catchError((error){
+     print(error);
+     throw(error);
+    });
   }
+
+
 
   void updateProduct(String id, Product newProduct) {
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
