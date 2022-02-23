@@ -86,7 +86,8 @@ class Products with ChangeNotifier {
               imageUrl: prodData['imageUrl'],
               isFavorite: prodData['isFavorite'],
             ));
-      }); _items = loadedProducts;
+      });
+      _items = loadedProducts;
       notifyListeners();
     } catch (error) {
       throw (error);
@@ -136,12 +137,32 @@ class Products with ChangeNotifier {
       _items[prodIndex] = newProduct;
       notifyListeners();
     } else {
-      print('https://static01.nyt.com/images/2021/09/14/science/07CAT-STRIPES/07CAT-STRIPES-mediumSquareAt3X-v2.jpg');
+      print(
+          'https://static01.nyt.com/images/2021/09/14/science/07CAT-STRIPES/07CAT-STRIPES-mediumSquareAt3X-v2.jpg');
     }
   }
 
   void deleteProduct(String id) {
-    _items.removeWhere((prod) => prod.id == id);
+    final url = Uri.parse(
+        'https://flutter-update-4c020-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id');
+    final existingProductIndex =
+    _items.indexWhere((element) => element.id == id);
+    var existingProduct = _items[existingProductIndex];
+    _items.removeAt(existingProductIndex);
+    http.delete(url).then((response) {
+      if(response.statusCode >= 400){
+
+      }
+      print(response.statusCode);
+
+      existingProduct = null;
+
+    }).catchError((_) {
+      print('error');
+      _items.insert(existingProductIndex, existingProduct);
+      notifyListeners();
+    });
+    //_items.removeWhere((prod) => prod.id == id);
     notifyListeners();
   }
 }
