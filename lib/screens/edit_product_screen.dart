@@ -83,7 +83,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
   }
 
-  Future<void> _saveForm() async {
+  _saveForm() async {
     final isValid = _form.currentState.validate();
     if (!isValid) {
       return;
@@ -101,10 +101,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
       });
       Navigator.of(context).pop();
     } else {
-      try {
+
         await Provider.of<Products>(context, listen: false)
             .addProduct(_editedProduct);
-      } catch (error) {
+        //we use await because the .addProduct is Future and we wait for it to be done First before popping else it the product is added after popping
+      /* catch (error) {
         await showDialog<Null>(
           context: context,
           builder: (ctx) => AlertDialog(
@@ -120,12 +121,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
             ],
           ),
         );
-      } finally {
+      } */
         setState(() {
           _isLoading = false;
         });
         Navigator.of(context).pop();
-      }
+
     }
     // Navigator.of(context).pop();
   }
