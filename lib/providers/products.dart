@@ -76,16 +76,17 @@ class Products with ChangeNotifier {
       final extractedData = json.decode(responce.body) as Map<String, dynamic>;
       final List<Product> loadedProducts = [];
       extractedData.forEach((prodId, prodData) {
-        loadedProducts.add(Product(
-          id: prodId,
-          title: prodData['title'],
-          description: prodData['description'],
-          price: prodData['price'],
-          imageUrl: prodData['imageUrl'],
-          isFavorite: prodData['isFavorite'],
-        ));
-      });
-      _items = loadedProducts;
+        loadedProducts.insert(
+            0,
+            Product(
+              id: prodId,
+              title: prodData['title'],
+              description: prodData['description'],
+              price: prodData['price'],
+              imageUrl: prodData['imageUrl'],
+              isFavorite: prodData['isFavorite'],
+            ));
+      }); _items = loadedProducts;
       notifyListeners();
     } catch (error) {
       throw (error);
@@ -120,13 +121,22 @@ class Products with ChangeNotifier {
     }
   }
 
-  void updateProduct(String id, Product newProduct) {
+  void updateProduct(String id, Product newProduct) async {
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
     if (prodIndex >= 0) {
+      final url = Uri.parse(
+          'https://flutter-update-4c020-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json');
+      await http.patch(url,
+          body: jsonEncode({
+            'description': newProduct.description,
+            "title": newProduct.title,
+            "imageUrl": newProduct.imageUrl,
+            "price": newProduct.price,
+          }));
       _items[prodIndex] = newProduct;
       notifyListeners();
     } else {
-      print('...');
+      print('https://static01.nyt.com/images/2021/09/14/science/07CAT-STRIPES/07CAT-STRIPES-mediumSquareAt3X-v2.jpg');
     }
   }
 
