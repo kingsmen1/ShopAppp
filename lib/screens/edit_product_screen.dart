@@ -50,7 +50,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
           'title': _editedProduct.title,
           'description': _editedProduct.description,
           'price': _editedProduct.price.toString(),
-          // 'imageUrl': _editedProduct.imageUrl,
           'imageUrl': '',
         };
         _imageUrlController.text = _editedProduct.imageUrl;
@@ -101,11 +100,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
       });
       Navigator.of(context).pop();
     } else {
-
+      try {
         await Provider.of<Products>(context, listen: false)
             .addProduct(_editedProduct);
         //we use await because the .addProduct is Future and we wait for it to be done First before popping else it the product is added after popping
-      /* catch (error) {
+      } catch (error) {
         await showDialog<Null>(
           context: context,
           builder: (ctx) => AlertDialog(
@@ -121,12 +120,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
             ],
           ),
         );
-      } */
-        setState(() {
-          _isLoading = false;
-        });
-        Navigator.of(context).pop();
-
+      }
+      setState(() {
+        _isLoading = false;
+      });
+      Navigator.of(context).pop();
     }
     // Navigator.of(context).pop();
   }

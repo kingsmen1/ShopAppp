@@ -68,6 +68,7 @@ class Products with ChangeNotifier {
   // }
 
   Future<void> fetchAndSetProducts() async {
+    print("fetchAndSetProducts()");
     final _url = Uri.parse(
         'https://flutter-update-4c020-default-rtdb.asia-southeast1.firebasedatabase.app/products.json');
     try {
