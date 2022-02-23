@@ -5,6 +5,7 @@ import './product.dart';
 
 class Products with ChangeNotifier {
   List<Product> _items = [
+    /*
     Product(
       id: 'p1',
       title: 'Red Shirt',
@@ -36,7 +37,7 @@ class Products with ChangeNotifier {
       price: 49.99,
       imageUrl:
           'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
-    ),
+    ),*/
   ];
 
   // var _showFavoritesOnly = false;
@@ -71,7 +72,20 @@ class Products with ChangeNotifier {
         'https://flutter-update-4c020-default-rtdb.asia-southeast1.firebasedatabase.app/products.json');
     try {
       final responce = await http.get(_url);
-      print(jsonDecode(responce.body));
+      final extractedData = json.decode(responce.body) as Map<String, dynamic>;
+      final List<Product> loadedProducts = [];
+      extractedData.forEach((prodId, prodData) {
+        loadedProducts.add(Product(
+          id: prodId,
+          title: prodData['title'],
+          description: prodData['description'],
+          price: prodData['price'],
+          imageUrl: prodData['imageUrl'],
+          isFavorite: prodData['isFavorite'],
+        ));
+      });
+      _items = loadedProducts;
+      notifyListeners();
     } catch (error) {
       throw (error);
     }
