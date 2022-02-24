@@ -8,8 +8,9 @@ class UserProductItem extends StatelessWidget {
   final String id;
   final String title;
   final String imageUrl;
+  final bool isFavorite;
 
-  UserProductItem(this.id, this.title, this.imageUrl);
+  UserProductItem(this.id, this.title, this.imageUrl , this.isFavorite);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class UserProductItem extends StatelessWidget {
               icon: Icon(Icons.edit),
               onPressed: () {
                 Navigator.of(context)
-                    .pushNamed(EditProductScreen.routeName, arguments: id);
+                    .pushNamed(EditProductScreen.routeName, arguments: id );
               },
               color: Theme.of(context).primaryColor,
             ),
