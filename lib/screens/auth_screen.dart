@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopapp/models/http_exception.dart';
 import '../providers/auth.dart';
 
 enum AuthMode { Signup, Login }
@@ -43,7 +44,7 @@ class AuthScreen extends StatelessWidget {
                     child: Container(
                       margin: EdgeInsets.only(bottom: 20.0),
                       padding:
-                      EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
+                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
                       transform: Matrix4.rotationZ(-8 * pi / 180)
                         ..translate(-10.0),
                       // ..translate(-10.0),
@@ -62,7 +63,7 @@ class AuthScreen extends StatelessWidget {
                         'MyShop',
                         style: TextStyle(
                           color:
-                          Theme.of(context).accentTextTheme.headline6.color,
+                              Theme.of(context).accentTextTheme.headline6.color,
                           fontSize: 50,
                           fontFamily: 'Anton',
                           fontWeight: FontWeight.normal,
@@ -103,6 +104,21 @@ class _AuthCardState extends State<AuthCard> {
   var _isLoading = false;
   final _passwordController = TextEditingController();
 
+  void showErrorDialogBox(String message) {
+    showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+              title: Text('An Error Occured'),
+              content: Text(message),
+              actions: [
+                FlatButton(
+                  child: Text('Okay'),
+                  onPressed: () => Navigator.of(ctx).pop(),
+                )
+              ],
+            ));
+  }
+
   Future<void> _submit() async {
     if (!_formKey.currentState.validate()) {
       // Invalid!
@@ -112,13 +128,36 @@ class _AuthCardState extends State<AuthCard> {
     setState(() {
       _isLoading = true;
     });
-    if (_authMode == AuthMode.Login) {
-      await Provider.of<Auth>(context , listen: false).login(_authData['email'], _authData['password']);
-      // Log user in
-    } else {
-      await Provider.of<Auth>(context , listen: false).signup(_authData['email'], _authData['password']);
-      // Sign user up
+    try {
+      if (_authMode == AuthMode.Login) {
+        await Provider.of<Auth>(context, listen: false)
+            .login(_authData['email'], _authData['password']);
+        // Log user in
+      } else {
+        await Provider.of<Auth>(context, listen: false)
+            .signup(_authData['email'], _authData['password']);
+        // Sign user up
+      }
+    } on HttpException catch (error) {
+      var _errorMessage = 'Authentication Failed!';
+      if (error.toString().contains('EMAIL_EXISTS')) {
+        _errorMessage = 'Email Already Exists!';
+      } else if (error.toString().contains('INVALID_EMAIL')) {
+        _errorMessage = ' Email is Not Valid ';
+      } else if (error.toString().contains('WEAK_PASSWORD')) {
+        _errorMessage = 'This Password Is Too Weak!';
+      } else if (error.toString().contains('EMAIL_NOT_FOUND')) {
+        _errorMessage = ' No User Found With This Email';
+      } else if (error.toString().contains('INVALID_PASSWORD')) {
+        _errorMessage = 'Password is Invalid';
+      }
+      showErrorDialogBox(_errorMessage);
+
+    } catch (error) {
+      const _errorMessage = 'Could Not Authenticate You , Please Try Later';
+      showErrorDialogBox(_errorMessage);
     }
+
     setState(() {
       _isLoading = false;
     });
@@ -147,7 +186,7 @@ class _AuthCardState extends State<AuthCard> {
       child: Container(
         height: _authMode == AuthMode.Signup ? 320 : 260,
         constraints:
-        BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 320 : 260),
+            BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 320 : 260),
         width: deviceSize.width * 0.75,
         padding: EdgeInsets.all(16.0),
         child: Form(
@@ -190,11 +229,11 @@ class _AuthCardState extends State<AuthCard> {
                     obscureText: true,
                     validator: _authMode == AuthMode.Signup
                         ? (value) {
-                      if (value != _passwordController.text) {
-                        return 'Passwords do not match!';
-                      }
-                      return null;
-                    }
+                            if (value != _passwordController.text) {
+                              return 'Passwords do not match!';
+                            }
+                            return null;
+                          }
                         : null,
                   ),
                 SizedBox(
@@ -205,14 +244,14 @@ class _AuthCardState extends State<AuthCard> {
                 else
                   ElevatedButton(
                     child:
-                    Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
+                        Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
                     onPressed: _submit,
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
                       padding:
-                      EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
+                          EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
                       primary: Theme.of(context).primaryColor,
                       // primary: Theme.of(context).primaryTextTheme.button.color,
                     ),
@@ -223,7 +262,7 @@ class _AuthCardState extends State<AuthCard> {
                   onPressed: _switchAuthMode,
                   style: TextButton.styleFrom(
                     padding:
-                    EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
+                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     primary: Theme.of(context).primaryColor,
                   ),
