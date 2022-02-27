@@ -46,9 +46,7 @@ class Products with ChangeNotifier {
   final String authToken;
   final String userId;
 
-
-  Products(this.authToken ,this.userId,  this._items  );
-
+  Products(this.authToken, this.userId, this._items);
 
   List<Product> get items {
     // if (_showFavoritesOnly) {
@@ -75,20 +73,20 @@ class Products with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  Future<void> fetchAndSetProducts() async {
-    print("fetchAndSetProducts()");
+  Future<void> fetchAndSetProducts([bool filterByUser = false]) async {
+    final filterString  = filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
     final _url = Uri.parse(
-        'https://flutter-update-4c020-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=$authToken');
+        'https://flutter-update-4c020-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=$authToken&$filterString');
     try {
       final responce = await http.get(_url);
       final extractedData = json.decode(responce.body) as Map<String, dynamic>;
-      if(extractedData == null){
+      if (extractedData == null) {
         return;
       }
-      final url  = Uri.parse("https://flutter-update-4c020-default-rtdb.asia-southeast1.firebasedatabase.app/userFavorites/$userId.json?auth=$authToken");
-      final favoriteResponse  = await http.get(url);
-      final favoriteData  = json.decode(favoriteResponse.body);
-      print(favoriteData);
+      final url = Uri.parse(
+          "https://flutter-update-4c020-default-rtdb.asia-southeast1.firebasedatabase.app/userFavorites/$userId.json?auth=$authToken");
+      final favoriteResponse = await http.get(url);
+      final favoriteData = json.decode(favoriteResponse.body);
       final List<Product> loadedProducts = [];
       extractedData.forEach((prodId, prodData) {
         loadedProducts.insert(
@@ -98,8 +96,9 @@ class Products with ChangeNotifier {
               title: prodData['title'],
               description: prodData['description'],
               price: prodData['price'],
-              imageUrl:prodData['imageUrl'],
-              isFavorite: favoriteData  == null ? false :favoriteData[prodId] ?? false,
+              imageUrl: prodData['imageUrl'],
+              isFavorite:
+                  favoriteData == null ? false : favoriteData[prodId] ?? false,
             ));
       });
       _items = loadedProducts;
@@ -119,6 +118,7 @@ class Products with ChangeNotifier {
             'description': product.description,
             "imageUrl": product.imageUrl,
             'price': product.price,
+            'creatorId': userId,
           }));
       final newProduct = Product(
         title: product.title,
@@ -150,9 +150,8 @@ class Products with ChangeNotifier {
           }));
       _items[prodIndex] = newProduct;
       notifyListeners();
-    } else {
-      print(
-          'https://static01.nyt.com/images/2021/09/14/science/07CAT-STRIPES/07CAT-STRIPES-mediumSquareAt3X-v2.jpg');
+    } else{
+      return;
     }
   }
 
