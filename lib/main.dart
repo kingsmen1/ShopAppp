@@ -21,38 +21,42 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider.value(value: Auth()),
           ChangeNotifierProxyProvider<Auth, Products>(
-            create: (_) => Products(null,null , []),
-            update: (_, auth, prevProducts) => Products(
-              auth.token,
-              auth.userId,
-              prevProducts.items,
-            ),
+            create: (_) => Products(null, null, []),
+            update: (_, auth, prevProducts) =>
+                Products(
+                  auth.token,
+                  auth.userId,
+                  prevProducts.items,
+                ),
           ),
           ChangeNotifierProvider(
             create: (ctx) => Cart(),
           ),
           ChangeNotifierProxyProvider<Auth, Orders>(
-              create: (_) => Orders(null,null, []),
+              create: (_) => Orders(null, null, []),
               update: (_, auth, prevOrders) =>
-                  Orders(auth.token, auth.userId , prevOrders.orders)),
+                  Orders(auth.token, auth.userId, prevOrders.orders)),
         ],
         child: Consumer<Auth>(
-          builder: (ctx, auth, _) => MaterialApp(
-              title: 'MyShop',
-              theme: ThemeData(
-                primarySwatch: Colors.purple,
-                accentColor: Colors.deepOrange,
-                fontFamily: 'Lato',
-              ),
-              home: auth.isAuth ? ProductsOverviewScreen() : AuthScreen(),
-              // initialRoute: '/',
-              routes: {
-                ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
-                CartScreen.routeName: (ctx) => CartScreen(),
-                OrdersScreen.routeName: (ctx) => OrdersScreen(),
-                UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
-                EditProductScreen.routeName: (ctx) => EditProductScreen(),
-              }),
+          builder: (ctx, auth, _) {
+            ifAuth(targetScreen) => auth.isAuth ? targetScreen : AuthScreen();
+            return MaterialApp(
+                title: 'MyShop',
+                theme: ThemeData(
+                  primarySwatch: Colors.purple,
+                  accentColor: Colors.deepOrange,
+                  fontFamily: 'Lato',
+                ),
+                home: auth.isAuth ? ProductsOverviewScreen() : AuthScreen(),
+                // initialRoute: '/',
+                routes: {
+                  ProductDetailScreen.routeName: (ctx) => ifAuth(ProductDetailScreen()),
+                  CartScreen.routeName: (ctx) => ifAuth(CartScreen()),
+                  OrdersScreen.routeName: (ctx) =>ifAuth(OrdersScreen()) ,
+                  UserProductsScreen.routeName: (ctx) =>ifAuth(UserProductsScreen()),
+                  EditProductScreen.routeName: (ctx) => ifAuth(EditProductScreen()),
+                });
+          },
         ));
   }
 }
