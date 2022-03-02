@@ -17,7 +17,7 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
-    final authToken = Provider.of<Auth>(context , listen:  false);
+    final authToken = Provider.of<Auth>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
@@ -28,8 +28,11 @@ class ProductItem extends StatelessWidget {
               arguments: product.id,
             );
           },
-          child: Image.network(
-            product.imageUrl,
+          child: FadeInImage(
+            placeholder: AssetImage('assets/images/product-placeholder.png'),
+            image: NetworkImage(
+              product.imageUrl,
+            ),
             fit: BoxFit.cover,
           ),
         ),
@@ -42,16 +45,16 @@ class ProductItem extends StatelessWidget {
               ),
               color: Theme.of(context).accentColor,
               onPressed: () async {
-                try{
-
-                  await product.toggleFavoriteStatus(authToken.token ,authToken.userId );
-
+                try {
+                  await product.toggleFavoriteStatus(
+                      authToken.token, authToken.userId);
                 } catch (_) {
                   Scaffold.of(context).showSnackBar(SnackBar(
                     content: Text('Deleting Failed'),
                     duration: Duration(seconds: 1),
                   ));
-                }},
+                }
+              },
             ),
           ),
           title: Text(
