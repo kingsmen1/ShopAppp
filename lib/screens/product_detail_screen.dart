@@ -17,16 +17,18 @@ class ProductDetailScreen extends StatelessWidget {
         .findById(productId); // is the id!
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(loadedProduct.title),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              height: 300,
-              width: double.infinity,
-              child: Hero(
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 300,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text(
+                loadedProduct.title,
+                style: TextStyle(fontSize: 44),
+              ),
+              centerTitle: true,
+              background: Hero(
                 tag: productId,
                 child: Image.network(
                   loadedProduct.imageUrl,
@@ -34,12 +36,16 @@ class ProductDetailScreen extends StatelessWidget {
                 ),
               ),
             ),
+          ),
+          SliverList(
+              delegate: SliverChildListDelegate([
+
             const SizedBox(
               height: 10,
             ),
             Text(
               '\$${loadedProduct.price}',
-              style: const TextStyle(color: Colors.grey, fontSize: 20),
+              style: const TextStyle(color: Colors.grey, fontSize: 20),textAlign: TextAlign.center,
             ),
             const SizedBox(
               height: 10,
@@ -53,8 +59,9 @@ class ProductDetailScreen extends StatelessWidget {
                 softWrap: true,
               ),
             ),
-          ],
-        ),
+                SizedBox(height: 900,)
+          ]))
+        ],
       ),
     );
   }
