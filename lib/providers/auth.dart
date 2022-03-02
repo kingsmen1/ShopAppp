@@ -83,32 +83,33 @@ class Auth with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey('userData')) {
       return false;
-    }try{
-    final extractedUserData =
-        json.decode(prefs.getString('userData')) as Map<String, dynamic>;
-    final expiryDate = DateTime.parse(extractedUserData['expiryDate']);
-    if (expiryDate.isBefore(DateTime.now())) {
-      return false;
     }
-    _token = extractedUserData['token'];
-    _userId = extractedUserData['userId'];
-    _expiryDate = expiryDate;}catch (error){
+    try {
+      final extractedUserData =
+          json.decode(prefs.getString('userData')) as Map<String, dynamic>;
+      final expiryDate = DateTime.parse(extractedUserData['expiryDate']);
+      if (expiryDate.isBefore(DateTime.now())) {
+        return false;
+      }
+      _token = extractedUserData['token'];
+      _userId = extractedUserData['userId'];
+      _expiryDate = expiryDate;
+    } catch (error) {
       print(error);
     }
     notifyListeners();
     _autoLogout();
     return true;
-
   }
 
-  void logout() async{
+  void logout() async {
     _token = null;
     if (_authTimer != null) {
       _authTimer.cancel();
       _authTimer = null;
     }
-    notifyListeners ();
-    final   prefs= await SharedPreferences.getInstance();
+    notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
     prefs.clear();
   }
 
