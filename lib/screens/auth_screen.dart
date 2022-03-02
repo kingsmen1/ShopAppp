@@ -12,7 +12,9 @@ class AuthScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
+    final deviceSize = MediaQuery
+        .of(context)
+        .size;
     // final transformConfig = Matrix4.rotationZ(-8 * pi / 180);
     // transformConfig.translate(-10.0);
     return Scaffold(
@@ -44,7 +46,7 @@ class AuthScreen extends StatelessWidget {
                     child: Container(
                       margin: EdgeInsets.only(bottom: 20.0),
                       padding:
-                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
+                      EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
                       transform: Matrix4.rotationZ(-8 * pi / 180)
                         ..translate(-10.0),
                       // ..translate(-10.0),
@@ -63,7 +65,11 @@ class AuthScreen extends StatelessWidget {
                         'MyShop',
                         style: TextStyle(
                           color:
-                              Theme.of(context).accentTextTheme.headline6.color,
+                          Theme
+                              .of(context)
+                              .accentTextTheme
+                              .headline6
+                              .color,
                           fontSize: 50,
                           fontFamily: 'Anton',
                           fontWeight: FontWeight.normal,
@@ -105,20 +111,28 @@ class _AuthCardState extends State<AuthCard>
   var _isLoading = false;
   final _passwordController = TextEditingController();
 
-  // AnimationController _controller;
-  // Animation<Size> _heightAnimation;
+  AnimationController _controller;
+  Animation<double> opacityAnimation;
+  Animation<Offset> slideAnimation;
 
   // var containerHeight = 260;
   @override
   void initState() {
     super.initState();
-    /* _controller = AnimationController(
+    _controller = AnimationController(
       vsync: this,
-      duration: Duration(
+      duration: const Duration(
         milliseconds: 300,
       ),
     );
-    _heightAnimation = Tween<Size>(
+    opacityAnimation = Tween<double>(begin: 0.0, end: 1.0)
+        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
+
+    slideAnimation =
+        Tween<Offset>(begin: Offset(0, -1.5), end: Offset(0, 0)).animate(
+            CurvedAnimation(parent: _controller, curve: Curves.bounceInOut));
+
+    /*_heightAnimation = Tween<Size>(
             begin: Size(double.infinity, 260), end: Size(double.infinity, 320))
         .animate(
       CurvedAnimation(
@@ -131,7 +145,8 @@ class _AuthCardState extends State<AuthCard>
   void showErrorDialogBox(String message) {
     showDialog(
         context: context,
-        builder: (ctx) => AlertDialog(
+        builder: (ctx) =>
+            AlertDialog(
               title: Text('An Error Occured'),
               content: Text(message),
               actions: [
@@ -191,18 +206,20 @@ class _AuthCardState extends State<AuthCard>
       setState(() {
         _authMode = AuthMode.Signup;
       });
-      // _controller.forward();
+      _controller.forward();
     } else {
       setState(() {
         _authMode = AuthMode.Login;
-        //_controller.reverse();
       });
+      _controller.reverse();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
+    final deviceSize = MediaQuery
+        .of(context)
+        .size;
     return Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
@@ -249,21 +266,33 @@ class _AuthCardState extends State<AuthCard>
                       _authData['password'] = value;
                     },
                   ),
-                  if (_authMode == AuthMode.Signup)
-                    TextFormField(
-                      enabled: _authMode == AuthMode.Signup,
-                      decoration:
+                  AnimatedContainer(
+                    constraints: BoxConstraints(
+                        minHeight: _authMode == AuthMode.Signup ? 60 : 0,
+                        maxHeight: _authMode == AuthMode.Signup ? 120 : 0),
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeIn,
+                    child: FadeTransition(
+                      opacity: opacityAnimation,
+                      child: SlideTransition(
+                        position:slideAnimation,
+                        child: TextFormField(
+                          enabled: _authMode == AuthMode.Signup,
+                          decoration:
                           InputDecoration(labelText: 'Confirm Password'),
-                      obscureText: true,
-                      validator: _authMode == AuthMode.Signup
-                          ? (value) {
-                              if (value != _passwordController.text) {
-                                return 'Passwords do not match!';
-                              }
-                              return null;
+                          obscureText: true,
+                          validator: _authMode == AuthMode.Signup
+                              ? (value) {
+                            if (value != _passwordController.text) {
+                              return 'Passwords do not match!';
                             }
-                          : null,
+                            return null;
+                          }
+                              : null,
+                        ),
+                      ),
                     ),
+                  ),
                   SizedBox(
                     height: 20,
                   ),
@@ -280,19 +309,25 @@ class _AuthCardState extends State<AuthCard>
                         ),
                         padding: EdgeInsets.symmetric(
                             horizontal: 30.0, vertical: 8.0),
-                        primary: Theme.of(context).primaryColor,
+                        primary: Theme
+                            .of(context)
+                            .primaryColor,
                         // primary: Theme.of(context).primaryTextTheme.button.color,
                       ),
                     ),
                   TextButton(
                     child: Text(
-                        '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
+                        '${_authMode == AuthMode.Login
+                            ? 'SIGNUP'
+                            : 'LOGIN'} INSTEAD'),
                     onPressed: _switchAuthMode,
                     style: TextButton.styleFrom(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
+                      EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      primary: Theme.of(context).primaryColor,
+                      primary: Theme
+                          .of(context)
+                          .primaryColor,
                     ),
                   ),
                 ],
